@@ -4,7 +4,8 @@ import { writeFileSync } from "node:fs"
 
 const args = process.argv.slice(2)
 const noise = args.includes("--noise")
-const colors = args.find(a => a.startsWith("--colors="))?.slice(9)?.split(",") || []
+const ci = args.indexOf("--colors")
+const colors = ci >= 0 ? args[ci + 1]?.split(",") : args.find(a => a.startsWith("--colors="))?.slice(9)?.split(",") || []
 const text = args.find(a => !a.startsWith("--"))
 if (!text) { console.error("usage: qr [--noise] [--colors=black,#F25602] <text>"); process.exit(1) }
 const pick = () => colors.length ? colors[Math.random() * colors.length | 0] : ""
