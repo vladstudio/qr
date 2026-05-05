@@ -16,10 +16,10 @@ const s = noise ? 3 : 1
 let rects = ""
 for (let y = 0; y < n * s; y++)
   for (let x = 0; x < n * s; x++) {
+    const inQR = x >= n && x < 2 * n && y >= n && y < 2 * n
+    const inQuiet = x >= n - 1 && x <= 2 * n && y >= n - 1 && y <= 2 * n && !inQR
     const dark = noise
-      ? x >= n && x < 2 * n && y >= n && y < 2 * n
-        ? code.isDark(x - n, y - n)
-        : Math.random() < 0.5
+      ? inQR ? code.isDark(x - n, y - n) : inQuiet ? false : Math.random() < 0.5
       : code.isDark(x, y)
     if (dark) rects += `<rect x="${x * 10}" y="${y * 10}" width="10" height="10"/>`
   }
