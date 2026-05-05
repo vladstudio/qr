@@ -4,8 +4,10 @@ import { writeFileSync } from "node:fs"
 
 const args = process.argv.slice(2)
 const noise = args.includes("--noise")
+const colors = args.find(a => a.startsWith("--colors="))?.slice(9)?.split(",") || []
 const text = args.find(a => !a.startsWith("--"))
-if (!text) { console.error("usage: qr [--noise] <text>"); process.exit(1) }
+if (!text) { console.error("usage: qr [--noise] [--colors=black,#F25602] <text>"); process.exit(1) }
+const pick = () => colors.length ? colors[Math.random() * colors.length | 0] : ""
 
 const code = qr(0, "M")
 code.addData(text)
@@ -21,7 +23,7 @@ for (let y = 0; y < n * s; y++)
     const dark = noise
       ? inQR ? code.isDark(x - n, y - n) : inQuiet ? false : Math.random() < 0.5
       : code.isDark(x, y)
-    if (dark) rects += `<rect x="${x * 10}" y="${y * 10}" width="10" height="10"/>`
+    if (dark) rects += `<rect x="${x * 10}" y="${y * 10}" width="10" height="10"${colors.length ? ` fill="${pick()}"` : ""}/>`
   }
 
 writeFileSync(
